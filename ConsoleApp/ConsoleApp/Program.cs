@@ -12,6 +12,11 @@ public static class Program
             new StudentData("Cindy Crawford", 21, "cindy-crawford@gmail.com", 4.8f, 4.1f, 4.5f),
         };
 
-        Console.WriteLine(outputData.ToString());
+        IEnumerable<string> averageData = outputData.Select(x=>$"{x.FullName}\t{Math.Round(x.AverageScore, 2)}");
+        foreach (string studentDataOutput in averageData)
+        {
+            Console.WriteLine(studentDataOutput);
+            Console.ReadKey();
+        }
     }
 }

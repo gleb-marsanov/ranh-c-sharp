@@ -4,4 +4,7 @@ internal record StudentData(string FullName, int Age, string Email, float Progra
 {
     public override string ToString() => 
         string.Join("\t", FullName, Age, Email, ProgrammingScore, MathScore, PhysicsScore);
+
+    public float AverageScore =>
+        (ProgrammingScore + MathScore + PhysicsScore) / 3;
 }
