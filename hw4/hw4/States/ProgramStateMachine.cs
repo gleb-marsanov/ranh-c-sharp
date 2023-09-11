@@ -1,16 +1,17 @@
+using hw4.Utils;
+
 namespace hw4.States;
 
 public class ProgramStateMachine
 {
     private readonly Dictionary<Type, IBaseState> _states;
 
-    public ProgramStateMachine()
+    public ProgramStateMachine(DeckParser deckParser)
     {
         _states = new Dictionary<Type, IBaseState>
         {
-            { typeof(InputState), new InputState(this) },
-            { typeof(ParsingState), new ParsingState(this) },
-            { typeof(OutputState), new OutputState(this) },
+            { typeof(InputState), new InputState(this, deckParser) },
+            { typeof(CalculationState), new CalculationState(this) },
             { typeof(ExitState), new ExitState(this) }
         };
     }
