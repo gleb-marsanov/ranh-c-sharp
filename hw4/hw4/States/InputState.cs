@@ -11,13 +11,13 @@ internal class InputState : IState
 
     public void Enter()
     {
-        Console.WriteLine("Введите число:");
+        Console.WriteLine("Введите максимальное число диапазона:");
 
         string? input = Console.ReadLine();
 
         if (int.TryParse(input, out int number))
         {
-            _stateMachine.Enter<ParsingState, int>(number);
+            _stateMachine.Enter<GameLoopState, int>(number);
         }
         else
         {
