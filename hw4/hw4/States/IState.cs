@@ -6,10 +6,10 @@ public interface IBaseState
 
 public interface IState : IBaseState
 {
-    void Enter();
+    Task Enter();
 }
 
 public interface IPayloadState<in TPayload> : IBaseState
 {
-    void Enter(TPayload payload);
+    Task Enter(TPayload payload);
 }

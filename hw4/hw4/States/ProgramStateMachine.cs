@@ -14,15 +14,15 @@ public class ProgramStateMachine
         };
     }
 
-    public void Enter<TState>() where TState : IState
+    public async Task Enter<TState>() where TState : IState
     {
         var state = _states[typeof(TState)] as IState;
-        state?.Enter();
+        await state?.Enter()!;
     }
 
-    public void Enter<TState, TValue>(TValue value) where TState : IPayloadState<TValue>
+    public async Task Enter<TState, TValue>(TValue value) where TState : IPayloadState<TValue>
     {
         var state = _states[typeof(TState)] as IPayloadState<TValue>;
-        state?.Enter(value);
+        await state?.Enter(value)!;
     }
 }

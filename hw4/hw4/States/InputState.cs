@@ -9,7 +9,7 @@ internal class InputState : IState
         _stateMachine = stateMachine;
     }
 
-    public void Enter()
+    public async Task Enter()
     {
         Console.WriteLine("Введите число:");
 
@@ -17,12 +17,12 @@ internal class InputState : IState
 
         if (int.TryParse(input, out int number))
         {
-            _stateMachine.Enter<CalculationState, int>(number);
+            await _stateMachine.Enter<CalculationState, int>(number);
         }
         else
         {
             Console.WriteLine("Некорректный ввод. Нужно целое число.");
-            _stateMachine.Enter<InputState>();
+            await _stateMachine.Enter<InputState>();
         }
     }
 }

@@ -9,7 +9,7 @@ public class ExitState : IState
         _stateMachine = stateMachine;
     }
 
-    public void Enter()
+    public async Task Enter()
     {
         Console.WriteLine("Для выхода нажмите X или Esc, для ввода нового числа - любую другую клавишу.");
 
@@ -20,8 +20,8 @@ public class ExitState : IState
         if (input.Key is ConsoleKey.X or ConsoleKey.Escape)
             Environment.Exit(0);
         else
-            _stateMachine.Enter<InputState>();
-        
+            await _stateMachine.Enter<InputState>();
+
         Environment.Exit(0);
     }
 }

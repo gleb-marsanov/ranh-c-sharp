@@ -5,11 +5,11 @@ namespace hw4;
 
 public static class Program
 {
-    public static void Main()
+    public static async Task Main()
     {
         Console.OutputEncoding = Encoding.UTF8;
-        
+
         var stateMachine = new ProgramStateMachine();
-        stateMachine.Enter<InputState>();
+        await stateMachine.Enter<InputState>();
     }
 }
