@@ -9,8 +9,7 @@ public class ProgramStateMachine
         _states = new Dictionary<Type, IBaseState>
         {
             { typeof(InputState), new InputState(this) },
-            { typeof(ParsingState), new ParsingState(this) },
-            { typeof(OutputState), new OutputState(this) },
+            { typeof(CalculationState), new CalculationState(this) },
             { typeof(ExitState), new ExitState(this) }
         };
     }

@@ -17,7 +17,7 @@ internal class InputState : IState
 
         if (int.TryParse(input, out int number))
         {
-            _stateMachine.Enter<ParsingState, int>(number);
+            _stateMachine.Enter<CalculationState, int>(number);
         }
         else
         {
