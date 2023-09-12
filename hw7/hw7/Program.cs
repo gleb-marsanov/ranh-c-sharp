@@ -12,11 +12,11 @@ internal static class Program
         Console.WriteLine("Введите предложение: ");
         string sentence = Console.ReadLine()!;
 
-        var words = SplitString(sentence);
-        WriteEnumerableToConsole(words);
+        MatchCollection words = SplitString(sentence);
+        WriteWordsToConsole(words);
     }
 
-    private static void WriteEnumerableToConsole(MatchCollection words) =>
+    private static void WriteWordsToConsole(MatchCollection words) =>
         Console.WriteLine(string.Join('\n', words));
 
     private static MatchCollection SplitString(string sentence) => 
