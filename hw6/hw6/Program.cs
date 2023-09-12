@@ -15,24 +15,29 @@ internal static class Program
         Console.Write("Кол-во столбцов: ");
         int columns = ConsoleExtensions.ReadInt();
 
-        var matrixWithRandomNumbers = new int[rows, columns];
+        var firstMatrix = new int[rows, columns];
+        var secondMatrix = new int[rows, columns];
 
         var random = new Random();
         for (var i = 0; i < rows; i++)
         {
             for (var j = 0; j < columns; j++)
-                matrixWithRandomNumbers[i, j] = random.Next(0, 100);
+            {
+                firstMatrix[i, j] = random.Next(0, 100);
+                secondMatrix[i, j] = random.Next(0, 100);
+            }
         }
 
-        Console.WriteLine("Матрица:");
+        Console.WriteLine($"Матрица 1: \n{firstMatrix.ToStringTable()}");
+        Console.WriteLine($"Матрица 2: \n{secondMatrix.ToStringTable()}");
+
+        var sumMatrix = new int[rows, columns];
         for (var i = 0; i < rows; i++)
         {
             for (var j = 0; j < columns; j++)
-                Console.Write($"{matrixWithRandomNumbers[i, j],4}");
-            Console.WriteLine();
+                sumMatrix[i, j] = firstMatrix[i, j] + secondMatrix[i, j];
         }
 
-        int sum = matrixWithRandomNumbers.Cast<int>().Sum();
-        Console.WriteLine($"Сумма всех элементов матрицы: {sum}");
+        Console.WriteLine($"Сумма матриц: \n{sumMatrix.ToStringTable()}");
     }
 }
