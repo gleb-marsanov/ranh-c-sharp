@@ -11,7 +11,7 @@ internal static class Program
         Console.InputEncoding = Encoding.GetEncoding(866);
 
         Console.WriteLine("Введите предложение: ");
-        string sentence = Console.ReadLine()!;//"шышел-мышел куда-то вышел";
+        string sentence = Console.ReadLine()!;
 
         IEnumerable<string> words = SplitString(sentence);
         WriteWordsToConsole(words);
