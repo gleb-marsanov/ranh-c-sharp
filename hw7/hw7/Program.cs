@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using System.Text.RegularExpressions;
 
 namespace hw7;
 
@@ -7,18 +6,20 @@ internal static class Program
 {
     public static void Main()
     {
-        Console.OutputEncoding = Encoding.UTF8;
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        Console.OutputEncoding = Encoding.GetEncoding(866);
+        Console.InputEncoding = Encoding.GetEncoding(866);
 
         Console.WriteLine("Введите предложение: ");
-        string sentence = Console.ReadLine()!;
+        string sentence = Console.ReadLine()!;//"шышел-мышел куда-то вышел";
 
-        MatchCollection words = SplitString(sentence);
+        IEnumerable<string> words = SplitString(sentence);
         WriteWordsToConsole(words);
     }
 
-    private static void WriteWordsToConsole(MatchCollection words) =>
+    private static void WriteWordsToConsole(IEnumerable<string> words) =>
         Console.WriteLine(string.Join('\n', words));
 
-    private static MatchCollection SplitString(string sentence) => 
-        Regex.Matches(sentence, @"\b\w+\b", RegexOptions.IgnoreCase);
+    private static IEnumerable<string> SplitString(string sentence) => 
+        sentence.Split(' ');
 }
