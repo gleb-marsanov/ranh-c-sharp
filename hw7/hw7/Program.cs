@@ -12,14 +12,14 @@ internal static class Program
 
         Console.WriteLine("Введите предложение: ");
         string sentence = Console.ReadLine()!;
-
-        IEnumerable<string> words = SplitString(sentence);
-        WriteWordsToConsole(words);
+        
+        string reversedSentence = ReverceSentence(sentence);
+        Console.WriteLine(reversedSentence);
     }
 
-    private static void WriteWordsToConsole(IEnumerable<string> words) =>
-        Console.WriteLine(string.Join('\n', words));
+    private static string ReverceSentence(string sentence) => 
+        string.Join(' ', SplitString(sentence).Reverse());
 
-    private static IEnumerable<string> SplitString(string sentence) => 
+    private static IEnumerable<string> SplitString(string sentence) =>
         sentence.Split(' ');
 }
