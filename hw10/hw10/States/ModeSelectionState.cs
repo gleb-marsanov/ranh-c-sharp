@@ -19,10 +19,15 @@ internal class ModeSelectionState : IState
             "\n2. Заполнить данные и добавить новую запись в конец файла"
         );
 
+        MoveToNextState();
+    }
+
+    private void MoveToNextState()
+    {
         ConsoleKeyInfo key = Console.ReadKey();
 
         Console.Clear();
-        
+
         switch (key)
         {
             case { Key: ConsoleKey.D1 }:
