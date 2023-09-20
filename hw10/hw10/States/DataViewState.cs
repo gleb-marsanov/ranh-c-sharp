@@ -1,4 +1,6 @@
-﻿using hw10.Data;
+﻿using System.Reflection;
+using hw10.Data;
+using hw10.Extensions;
 
 namespace hw10.States;
 
@@ -15,52 +17,83 @@ internal class DataViewState : IState
 
     public void Enter()
     {
-        WriteDataTableToConsole();
+        int mode = ReadViewMode();
+
+        switch (mode)
+        {
+            case 1:
+                PrintAll();
+                break;
+            case 2:
+                PrintRecordWithId();
+                break;
+            case 3:
+                PrintRecordsInDateRange();
+                break;
+            default:
+                Console.WriteLine("Неверный ввод. Попробуйте ещё раз.");
+                break;
+        }
+
         _stateMachine.Enter<ModeSelectionState>();
     }
 
-    private void WriteDataTableToConsole()
+    private static int ReadViewMode()
     {
-        if (!_repository.Workers.Any())
-            return;
+        Console.WriteLine("1. Все записи" +
+                          "\n2. Запись с заданным ID" +
+                          "\n3. Записи в выбранном диапазоне дат");
 
-        const string idColumn = "ID";
-        const string creationDateColumn = "Creation Date";
-        const string fullNameColumn = "Full Name";
-        const string ageColumn = "Age";
-        const string heightColumn = "Height";
-        const string dateColumn = "Birth Date";
-        const string birthPlaceColumn = "Birth Place";
+        int mode = ConsoleExtensions.ReadInt();
+        return mode;
+    }
 
-        int idColumnWidth = Math.Max(_repository.Workers.Max(x => x.Id).ToString().Length, idColumn.Length);
-        int creationDateColumnWidth = Math.Max(_repository.Workers.Max(x => x.CreationDate.ToString("dd.MM.yyyy hh:mm").Length), creationDateColumn.Length);
-        int fullNameColumnWidth = Math.Max(_repository.Workers.Max(x => x.FullName.Length), fullNameColumn.Length);
-        int ageColumnWidth = Math.Max(_repository.Workers.Max(x => x.Age.ToString().Length), ageColumn.Length);
-        int heightColumnWidth = Math.Max(_repository.Workers.Max(x => x.Height.ToString().Length), heightColumn.Length);
-        int birthDateColumnWidth = Math.Max(_repository.Workers.Max(x => x.BirthDate.ToString().Length), dateColumn.Length);
-        int birthPlaceColumnWidth = Math.Max(_repository.Workers.Max(x => x.BirthPlace.Length), birthPlaceColumn.Length);
+    private void PrintRecordsInDateRange()
+    {
+        Console.WriteLine("Введите начальную дату: ");
+        DateOnly startDate = ConsoleExtensions.ReadDate();
 
-        Console.WriteLine(string.Join(" | ",
-            idColumn.PadRight(idColumnWidth),
-            creationDateColumn.PadRight(creationDateColumnWidth),
-            fullNameColumn.PadRight(fullNameColumnWidth),
-            ageColumn.PadRight(ageColumnWidth),
-            heightColumn.PadRight(heightColumnWidth),
-            dateColumn.PadRight(birthDateColumnWidth),
-            birthPlaceColumn.PadRight(birthPlaceColumnWidth)
-        ));
+        Console.WriteLine("Введите конечную дату: ");
+        DateOnly endDate = ConsoleExtensions.ReadDate();
 
-        foreach (Worker repositoryWorker in _repository.Workers)
-        {
-            Console.WriteLine(string.Join(" | ",
-                repositoryWorker.Id.ToString().PadRight(idColumnWidth),
-                repositoryWorker.CreationDate.ToString("dd.MM.yyyy hh:mm").PadRight(creationDateColumnWidth),
-                repositoryWorker.FullName.PadRight(fullNameColumnWidth),
-                repositoryWorker.Age.ToString().PadRight(ageColumnWidth),
-                repositoryWorker.Height.ToString().PadRight(heightColumnWidth),
-                repositoryWorker.BirthDate.ToString("dd.MM.yyyy").PadRight(birthDateColumnWidth),
-                repositoryWorker.BirthPlace.PadRight(birthPlaceColumnWidth))
-            );
-        }
+        IEnumerable<Worker> workers = _repository.GetWorkersCreatedBetween(startDate, endDate);
+        Console.WriteLine(ApplySort(workers).ToArray().ToStringTable());
+    }
+
+    private void PrintRecordWithId()
+    {
+        Console.WriteLine("Введите ID записи: ");
+        int id = ConsoleExtensions.ReadInt();
+
+        Console.WriteLine(_repository.TryGetWorker(id, out Worker worker)
+            ? worker!.ToString()
+            : "Запись с таким ID не найдена."
+        );
+    }
+
+    private IEnumerable<Worker> ApplySort(IEnumerable<Worker> workers)
+    {
+        Console.WriteLine("Выполнить сортировку? (y/n)");
+        if (!ConsoleExtensions.ReadYesNo())
+            return workers;
+
+        Console.WriteLine("Выберите поле для сортировки: ");
+        PropertyInfo[] properties = typeof(Worker).GetProperties();
+
+        for (var i = 0; i < properties.Length; i++)
+            Console.WriteLine($"{i + 1}. {properties[i].Name}");
+
+        int sortField = ConsoleExtensions.ReadInt() - 1;
+
+        if (sortField < 0 || sortField >= properties.Length)
+            return workers;
+
+        return workers.OrderBy(x => properties[sortField].GetValue(x));
+    }
+
+    private void PrintAll()
+    {
+        IEnumerable<Worker> workers = _repository.Workers;
+        Console.WriteLine(ApplySort(workers).ToArray().ToStringTable());
     }
 }

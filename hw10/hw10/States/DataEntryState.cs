@@ -1,6 +1,6 @@
 ﻿using hw10.Data;
+using hw10.Extensions;
 using hw10.Factories;
-using hw10.Utilities;
 
 namespace hw10.States;
 
@@ -19,7 +19,32 @@ internal class DataEntryState : IState
 
     public void Enter()
     {
-        _workerFactory.CreateWorker();
+        Console.WriteLine("1. Добавить запись" +
+                          "\n2. Удалить запись");
+
+        switch (ConsoleExtensions.ReadInt())
+        {
+            case 1:
+                AddRecord();
+                break;
+            case 2:
+                DeleteRecord();
+                break;
+        }
+        
         _stateMachine.Enter<ModeSelectionState>();
+    }
+
+    private void DeleteRecord()
+    {
+        Console.WriteLine("Введите ID записи: ");
+        int id = ConsoleExtensions.ReadInt();
+        
+        _repository.RemoveWorker(id);
+    }
+
+    private void AddRecord()
+    {
+        _workerFactory.CreateWorker();
     }
 }

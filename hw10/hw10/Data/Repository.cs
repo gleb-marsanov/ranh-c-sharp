@@ -20,11 +20,17 @@ internal class Repository
         _workers = LoadAllWorkers().ToList();
     }
 
-    private IEnumerable<Worker> LoadAllWorkers()
+    public bool TryGetWorker(int id, out Worker? worker)
     {
-        using var reader = new StreamReader(_dataFilePath);
-        while (reader.ReadLine() is { } line)
-            yield return _stringSerializer.Deserialize<Worker>(line);
+        worker = _workers.FirstOrDefault(x => x.Id == id);
+
+        return worker is not null;
+    }
+
+    public void RemoveWorker(int id)
+    {
+        _workers.RemoveAll(x => x.Id == id);
+        Save();
     }
 
     public void AddWorker(Worker worker)
@@ -33,5 +39,26 @@ internal class Repository
         using var writer = new StreamWriter(_dataFilePath, true);
         string strData = _stringSerializer.Serialize(worker);
         writer.WriteLine(strData);
+    }
+
+    public IEnumerable<Worker> GetWorkersCreatedBetween(DateOnly start, DateOnly end) => 
+        _workers.Where(x => DateOnly.FromDateTime(x.CreationDate) >= start && DateOnly.FromDateTime(x.CreationDate.Date) <= end);
+
+    private IEnumerable<Worker> LoadAllWorkers()
+    {
+        using var reader = new StreamReader(_dataFilePath);
+        while (reader.ReadLine() is { } line)
+            yield return _stringSerializer.Deserialize<Worker>(line);
+    }
+
+    private void Save()
+    {
+        File.WriteAllText(_dataFilePath, string.Empty);
+        
+        using var writer = new StreamWriter(_dataFilePath);
+        foreach (string data in _workers.Select(worker => _stringSerializer.Serialize(worker)))
+        {
+            writer.WriteLine(data);
+        }
     }
 }
